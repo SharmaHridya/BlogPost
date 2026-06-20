@@ -1,1 +1,2 @@
 -used appwrite for backend, html parser, tinymce for text editor,react hook form for form submission'
+-useref hook to take a reference fo a common componet being used for every input-- the state reference has to be used in some other file

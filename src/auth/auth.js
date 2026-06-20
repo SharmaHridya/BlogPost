@@ -38,7 +38,9 @@ export class AuthService {
 
     async getCurrentUser() {
         try {
-            return await this.account.get();
+            const user = await this.account.get();
+            console.log("User fetched:", user);
+            return user;
         } catch (error) {
             console.log("No active session", error);
             return null;
