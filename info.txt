@@ -1,0 +1,1 @@
+-used appwrite for backend, html parser, tinymce for text editor,react hook form for form submission'
