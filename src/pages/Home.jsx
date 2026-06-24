@@ -1,21 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, PostCard } from '../components';
 import service from '../auth/config';
+import { toUserMessage } from '../utils/appwriteError';
 
 function Home() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
-    useEffect(() => {
+    const loadPosts = useCallback(() => {
+        setLoading(true);
+        setError('');
         service.getPosts()
             .then((result) => {
-                if (result) {
-                    setPosts(result.documents);
-                }
+                setPosts(result.documents);
+            })
+            .catch((err) => {
+                setError(toUserMessage(err, 'Unable to load posts right now. Please try again.'));
+                setPosts([]);
             })
             .finally(() => setLoading(false));
     }, []);
+
+    useEffect(() => {
+        queueMicrotask(() => {
+            loadPosts();
+        });
+    }, [loadPosts]);
 
     return (
         <div className="py-10">
@@ -46,7 +58,7 @@ function Home() {
                 )}
 
                 {/* Empty state */}
-                {!loading && posts.length === 0 && (
+                {!loading && !error && posts.length === 0 && (
                     <div className="text-center py-20">
                         <div className="w-20 h-20 rounded-3xl bg-indigo-50 dark:bg-indigo-950/40 flex items-center justify-center mx-auto mb-6">
                             <svg className="w-10 h-10 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -76,8 +88,23 @@ function Home() {
                     </div>
                 )}
 
+                {!loading && error && (
+                    <div className="text-center py-20">
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                            Could not load posts
+                        </h2>
+                        <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">{error}</p>
+                        <button
+                            onClick={loadPosts}
+                            className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors"
+                        >
+                            Retry
+                        </button>
+                    </div>
+                )}
+
                 {/* Post grid */}
-                {!loading && posts.length > 0 && (
+                {!loading && !error && posts.length > 0 && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {posts.map((post) => (
                             <PostCard key={post.$id} {...post} />

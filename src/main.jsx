@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
@@ -16,6 +17,7 @@ const AddPost = lazy(() => import('./pages/AddPost.jsx'));
 const EditPost = lazy(() => import('./pages/EditPost.jsx'));
 const Post = lazy(() => import('./pages/Post.jsx'));
 const AllPosts = lazy(() => import('./pages/AllPosts.jsx'));
+const NotFound = lazy(() => import('./pages/NotFound.jsx'));
 
 // Minimal spinner used during lazy-load suspense
 const PageSpinner = () => (
@@ -94,6 +96,14 @@ const router = createBrowserRouter([
                 element: (
                     <Suspense fallback={<PageSpinner />}>
                         <Post />
+                    </Suspense>
+                ),
+            },
+            {
+                path: '*',
+                element: (
+                    <Suspense fallback={<PageSpinner />}>
+                        <NotFound />
                     </Suspense>
                 ),
             },

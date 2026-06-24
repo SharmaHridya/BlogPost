@@ -1,7 +1,6 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
-function Logo({ width = '100px', linkTo = '/', showText = true }) {
+function Logo({ linkTo = '/', showText = true }) {
     return (
         <Link to={linkTo} className="inline-flex items-center gap-2 group">
             <div
