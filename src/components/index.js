@@ -1,31 +1,16 @@
-import Footer from "./Footer/Footer.jsx";
-import Header from "./Header/Header.jsx";
-import Container from "./Container.jsx"
-import Logo from "./Logo.jsx"
-import LogoutButton from "./Header/LogoutButton.jsx"
-import AuthLayout from "./AuthLayout.jsx"
-import Login from "../pages/Login.jsx"
-import Signup from "../pages/Signup.jsx"
-import Button from "./Button.jsx"
-import Input from "./input.jsx"
-import Select from "./Select.jsx"
-import RTE from "./RTE.jsx"
-import PostForm from "./post_form/PostForm.jsx"
-import PostCard from "./PostCard.jsx"
+// Component barrel exports
+// NOTE: Login and Signup pages are NOT exported here to avoid circular dependencies.
+// pages/Login.jsx and pages/Signup.jsx import directly from their component files.
 
-export {
-    Footer,
-    Header,
-    Container,
-    Logo,
-    LogoutButton,
-    AuthLayout,
-    Login,
-    Signup,
-    Button,
-    Input,
-    Select,
-    RTE,
-    PostForm,
-    PostCard
-}
+export { default as Footer } from './Footer/Footer.jsx';
+export { default as Header } from './Header/Header.jsx';
+export { default as Container } from './Container.jsx';
+export { default as Logo } from './Logo.jsx';
+export { default as LogoutButton } from './Header/LogoutButton.jsx';
+export { default as AuthLayout } from './AuthLayout.jsx';
+export { default as Button } from './Button.jsx';
+export { default as RTE } from './RTE.jsx';
+export { default as PostForm } from './post_form/PostForm.jsx';
+export { default as PostCard } from './PostCard.jsx';
+export { default as InputField } from './InputForm.jsx';
+export { default as Select } from './Select.jsx';

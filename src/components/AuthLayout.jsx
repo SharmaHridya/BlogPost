@@ -1,23 +1,35 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
-function Protected({ children, authentication = true }) {
+/**
+ * AuthGuard — wraps routes to enforce authentication.
+ *
+ * @param {boolean} authentication - true = route requires login, false = route is for guests only
+ */
+export default function AuthGuard({ children, authentication = true }) {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
     const authStatus = useSelector((state) => state.auth.status);
-    const [loader, setLoader] = useState(true);
 
     useEffect(() => {
-        if (authentication && authStatus !== authentication) {
-            navigate("/login")
-        } else if (!authentication && authStatus !== authentication) {
-            navigate("/")
+        if (authentication && !authStatus) {
+            // Protected route — user is not logged in
+            navigate('/login', { replace: true });
+        } else if (!authentication && authStatus) {
+            // Guest-only route (login/signup) — user is already logged in
+            navigate('/', { replace: true });
         }
-        setLoader(false);
-    }, [authStatus, navigate, authentication])
+        setLoading(false);
+    }, [authStatus, navigate, authentication]);
 
-    return loader ? <h1>Loading...</h1> : <>{children}</>
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-[calc(100vh-8rem)]">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+            </div>
+        );
+    }
 
+    return <>{children}</>;
 }
-
-export default Protected
