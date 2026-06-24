@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Container, PostCard } from '../components';
 import service from '../auth/config';
+import { toUserMessage } from '../utils/appwriteError';
 
 function AllPosts() {
     const [posts, setPosts] = useState([]);
@@ -10,11 +11,9 @@ function AllPosts() {
     useEffect(() => {
         service.getAllPosts()
             .then((result) => {
-                if (result) {
-                    setPosts(result.documents);
-                }
+                setPosts(result.documents);
             })
-            .catch(() => setError('Failed to load posts. Please try again.'))
+            .catch((err) => setError(toUserMessage(err, 'Failed to load posts. Please try again.')))
             .finally(() => setLoading(false));
     }, []);
 
