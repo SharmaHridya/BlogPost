@@ -6,6 +6,7 @@ import { login, logout } from './store/authslice';
 import { Header, Footer } from './components/index.js';
 import { toUserMessage } from './utils/appwriteError.js';
 
+
 function App() {
     const [loading, setLoading] = useState(true);
     const [authInitError, setAuthInitError] = useState('');

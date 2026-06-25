@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, React } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import service from '../../auth/config';
 import { Button, Select, RTE, InputField } from '../index';
+
 
 export default function PostForm({ post }) {
     const navigate = useNavigate();
@@ -22,7 +23,7 @@ export default function PostForm({ post }) {
     } = useForm({
         defaultValues: {
             title: post?.title || '',
-            slug: post?.$id || '',
+            slug: post?.slug || '',
             content: post?.content || '',
             status: post?.status || 'active',
         },
@@ -30,26 +31,32 @@ export default function PostForm({ post }) {
 
     // Auto-generate slug from title
     const slugTransform = useCallback((value) => {
+        console.log('slugTransform called with:', value);
         if (value && typeof value === 'string') {
-            return value
+            const result = value
                 .trim()
                 .toLowerCase()
-                .replace(/[^a-z0-9\s-]/g, '')
-                .replace(/\s+/g, '-')
-                .replace(/-+/g, '-');
+                .replace(/[^a-zA-Z\d\s]+/g, "-")
+                .replace(/\s+/g, "-")
+                .replace(/-+/g, "-");
+
+            return result;
         }
         return '';
     }, []);
 
-    useEffect(() => {
-        const subscription = watch((value, { name }) => {
-            if (name === 'title') {
-                setValue('slug', slugTransform(value.title), { shouldValidate: true });
-            }
-        });
-        return () => subscription.unsubscribe();
-    }, [watch, slugTransform, setValue]);
+    // Auto-generate slug from title using watch with effect
+    // Replace your current useEffect with this:
+    const title = watch('title');
 
+    useEffect(() => {
+        if (title) {
+            setValue('slug', slugTransform(title), { shouldValidate: true });
+        }
+        else {
+            setValue('slug', "");
+        }
+    }, [title, slugTransform, setValue]);
     const onSubmit = async (data) => {
         setSubmitError('');
         setSubmitting(true);
@@ -116,13 +123,10 @@ export default function PostForm({ post }) {
                     <div>
                         <InputField
                             label="Slug"
-                            placeholder="your-post-slug"
-                            {...register('slug', { required: 'Slug is required' })}
-                            onInput={(e) =>
-                                setValue('slug', slugTransform(e.currentTarget.value), {
-                                    shouldValidate: true,
-                                })
-                            }
+                            readOnly
+                            {...register("slug", {
+                                required: "Slug is required",
+                            })}
                         />
                         {errors.slug && (
                             <p className="mt-1 text-xs text-red-500">{errors.slug.message}</p>

@@ -1,8 +1,30 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import service from '../auth/config';
 
 const PostCard = React.memo(function PostCard({ $id, title, featuredImage, status }) {
+    const navigate = useNavigate();
+
+    const handleEdit = (e) => {
+        e.preventDefault();   // stops Link navigation
+        e.stopPropagation();  // stops parent click
+        navigate(`/edit-post/${$id}`);
+    };
+    const handleDelete = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const confirmDelete = window.confirm("Are you sure you want to delete this post?");
+        if (!confirmDelete) return;
+
+        try {
+            await service.deletePost($id);
+            window.location.reload(); // or better: remove from state
+        } catch (err) {
+            console.error("Delete failed:", err);
+        }
+    };
+
     return (
         <Link
             to={`/post/${$id}`}
@@ -28,16 +50,32 @@ const PostCard = React.memo(function PostCard({ $id, title, featuredImage, statu
 
             {/* Content */}
             <div className="p-4">
-                <div className="flex items-start justify-between gap-2">
+                <div className="flex flex-row items-left gap-4">
                     <h2 className="text-base font-semibold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2">
                         {title}
                     </h2>
-                    {status === 'inactive' && (
-                        <span className="flex-shrink-0 text-[10px] font-medium px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-                            Draft
-                        </span>
-                    )}
+
+                    {/* Edit Button */}
+                    <button
+                        onClick={handleEdit}
+                        className="text-xs px-2 py-1 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 transition"
+                    >
+                        Edit
+                    </button>
+                    <button
+                        onClick={handleDelete}
+                        className="text-xs px-2 py-1 rounded-md bg-red-100 hover:bg-red-200 dark:bg-red-800 dark:hover:bg-red-700 text-red-700 dark:text-red-200 transition"
+                    >
+                        Delete
+                    </button>
                 </div>
+
+                {status === 'inactive' && (
+                    <span className="inline-block mt-2 text-[10px] font-medium px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                        Draft
+                    </span>
+                )}
+
                 <div className="mt-3 flex items-center text-xs text-indigo-600 dark:text-indigo-400 font-medium">
                     Read more
                     <svg className="ml-1 w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 20 20" fill="currentColor">

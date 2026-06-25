@@ -28,14 +28,14 @@ export class Service {
         }
     }
 
-    async createPost({ title, slug, content, featuredImage, status, userId }) {
+    async createPost({ title, slug, content, featuredImage, status, $id }) {
         try {
             this.ensureConfig();
             return await this.databases.createDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionId,
                 slug,
-                { title, content, featuredImage, status, userId }
+                { title, content, featuredImage, status, $id }
             );
         } catch (error) {
             logDevError("Service::createPost", error);
@@ -148,7 +148,7 @@ export class Service {
     getFilePreview(fileId) {
         this.ensureConfig();
         // Returns a URL object — convert to string for use in <img src>
-        return this.bucket.getFilePreview(conf.appwriteBucketId, fileId).toString();
+        return this.bucket.getFileView(conf.appwriteBucketId, fileId).toString();
     }
 }
 

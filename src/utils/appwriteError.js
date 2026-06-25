@@ -7,7 +7,7 @@ export function logDevError(scope, error) {
 }
 
 export function isUnauthorizedError(error) {
-    return error?.code === 401 || error?.type === 'user_unauthorized';
+    return error?.code === 401 || error?.type === 'user_unauthorized' || error?.type === 'Login/Signup to read and edit the posts';
 }
 
 export function isNotFoundError(error) {

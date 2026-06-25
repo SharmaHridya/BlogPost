@@ -14,3 +14,4 @@ export { default as PostForm } from './post_form/PostForm.jsx';
 export { default as PostCard } from './PostCard.jsx';
 export { default as InputField } from './InputForm.jsx';
 export { default as Select } from './Select.jsx';
+export { default as ErrorBoundary } from './ErrorBoundary.jsx';

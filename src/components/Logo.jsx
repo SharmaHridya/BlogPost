@@ -4,7 +4,7 @@ function Logo({ linkTo = '/', showText = true }) {
     return (
         <Link to={linkTo} className="inline-flex items-center gap-2 group">
             <div
-                className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-600 group-hover:bg-indigo-700 transition-colors duration-200 flex-shrink-0"
+                className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-600 group-hover:bg-indigo-700 transition-colors duration-200 shrink-0"
                 style={{ minWidth: '2rem' }}
             >
                 <svg

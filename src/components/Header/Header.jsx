@@ -14,8 +14,9 @@ function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [logoutLoading, setLogoutLoading] = useState(false);
 
+
     const navLinks = [
-        { name: 'Home', to: '/', always: true },
+        { name: 'Home', to: '/', auth: true },
         { name: 'All Posts', to: '/all-posts', auth: true },
         { name: 'Write', to: '/add-post', auth: true },
         { name: 'Sign in', to: '/login', guest: true },
@@ -34,20 +35,19 @@ function Header() {
         try {
             await authService.userLogout();
             dispatch(logout());
-            navigate('/');
+            navigate("/login");
         } catch {
             dispatch(logout());
-            navigate('/');
+            navigate("/login");
         } finally {
             setLogoutLoading(false);
         }
     };
 
     const linkClass = ({ isActive }) =>
-        `text-sm font-medium px-3 py-1.5 rounded-lg transition-colors duration-200 ${
-            isActive
-                ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50'
-                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
+        `text-sm font-medium px-3 py-1.5 rounded-lg transition-colors duration-200 ${isActive
+            ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50'
+            : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
         }`;
 
     return (
@@ -55,7 +55,15 @@ function Header() {
             <Container>
                 <nav className="flex items-center justify-between h-16">
                     {/* Logo */}
-                    <Logo />
+                    {!authStatus ? (
+                        <NavLink to="/" className="flex items-center">
+                            <Logo />
+                        </NavLink>
+                    ) : (
+                        <NavLink to="/all-posts" className="flex items-center">
+                            <Logo />
+                        </NavLink>
+                    )}
 
                     {/* Desktop navigation */}
                     <ul className="hidden md:flex items-center gap-1">

@@ -73,17 +73,12 @@ function Home() {
                         </p>
                         <div className="flex items-center justify-center gap-3">
                             <Link
-                                to="/signup"
+                                to="/add-post"
                                 className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors"
                             >
                                 Get started
                             </Link>
-                            <Link
-                                to="/login"
-                                className="px-5 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                            >
-                                Sign in
-                            </Link>
+
                         </div>
                     </div>
                 )}
