@@ -41,23 +41,23 @@ function Signup() {
     };
 
     return (
-        <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12">
+        <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-zinc-50/70 px-4 py-12 dark:bg-zinc-950">
             <div className="w-full max-w-md">
                 {/* Card */}
-                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl shadow-gray-200/60 dark:shadow-gray-900/60 border border-gray-100 dark:border-gray-800 p-8">
+                <div className="rounded-lg border border-zinc-200 bg-white p-8 shadow-lg shadow-zinc-200/70 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-black/25">
                     {/* Logo */}
                     <div className="flex justify-center mb-6">
                         <Logo showText={false} />
                     </div>
 
-                    <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-1">
+                    <h1 className="mb-1 text-center text-2xl font-semibold tracking-tight text-zinc-950 dark:text-white">
                         Create your account
                     </h1>
-                    <p className="text-sm text-center text-gray-500 dark:text-gray-400 mb-6">
+                    <p className="mb-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
                         Already have an account?{' '}
                         <Link
                             to="/login"
-                            className="font-medium text-indigo-600 dark:text-indigo-400 hover:underline"
+                            className="font-semibold text-blue-700 hover:underline dark:text-blue-300"
                         >
                             Sign in
                         </Link>
@@ -65,7 +65,7 @@ function Signup() {
 
                     {/* Error message */}
                     {error && (
-                        <div className="mb-5 px-4 py-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-400">
+                        <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-900/60 dark:bg-red-950/25 dark:text-red-300">
                             {error}
                         </div>
                     )}
@@ -77,6 +77,7 @@ function Signup() {
                                     label="Full name"
                                     type="text"
                                     placeholder="Jane Doe"
+                                    error={errors.name?.message}
                                     {...register('name', {
                                         required: 'Name is required',
                                         minLength: {
@@ -85,15 +86,13 @@ function Signup() {
                                         },
                                     })}
                                 />
-                                {errors.name && (
-                                    <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>
-                                )}
                             </div>
                             <div>
                                 <InputField
                                     label="Email address"
                                     type="email"
                                     placeholder="you@example.com"
+                                    error={errors.email?.message}
                                     {...register('email', {
                                         required: 'Email is required',
                                         pattern: {
@@ -102,15 +101,13 @@ function Signup() {
                                         },
                                     })}
                                 />
-                                {errors.email && (
-                                    <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
-                                )}
                             </div>
                             <div>
                                 <InputField
                                     label="Password"
                                     type="password"
                                     placeholder="••••••••"
+                                    error={errors.password?.message}
                                     {...register('password', {
                                         required: 'Password is required',
                                         minLength: {
@@ -119,9 +116,6 @@ function Signup() {
                                         },
                                     })}
                                 />
-                                {errors.password && (
-                                    <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>
-                                )}
                             </div>
                             <Button
                                 type="submit"

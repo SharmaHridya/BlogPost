@@ -22,7 +22,7 @@ const NotFound = lazy(() => import('./pages/NotFound.jsx'));
 // Minimal spinner used during lazy-load suspense
 const PageSpinner = () => (
     <div className="flex items-center justify-center min-h-[calc(100vh-8rem)]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-b-blue-600 dark:border-zinc-800 dark:border-b-blue-400" />
     </div>
 );
 

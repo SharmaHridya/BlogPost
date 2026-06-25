@@ -5,6 +5,7 @@ import parse from 'html-react-parser';
 import service from '../auth/config';
 import { Button, Container } from '../components';
 import { toUserMessage } from '../utils/appwriteError';
+import { estimateReadingTime, formatPostDate, getInitials } from '../utils/postMeta';
 
 export default function Post() {
     const [post, setPost] = useState(null);
@@ -67,14 +68,14 @@ export default function Post() {
     // Loading skeleton
     if (loading) {
         return (
-            <div className="py-8">
+            <div className="bg-zinc-50/70 py-10 dark:bg-zinc-950 sm:py-14">
                 <Container>
                     <div className="animate-pulse space-y-6">
-                        <div className="aspect-video w-full rounded-2xl bg-gray-200 dark:bg-gray-800" />
-                        <div className="h-8 bg-gray-200 dark:bg-gray-800 rounded w-2/3" />
+                        <div className="aspect-video w-full rounded-lg bg-zinc-200 dark:bg-zinc-800" />
+                        <div className="h-8 w-2/3 rounded bg-zinc-200 dark:bg-zinc-800" />
                         <div className="space-y-3">
                             {Array.from({ length: 6 }).map((_, i) => (
-                                <div key={i} className={`h-4 bg-gray-100 dark:bg-gray-700 rounded ${i % 3 === 2 ? 'w-2/3' : 'w-full'}`} />
+                                <div key={i} className={`h-4 rounded bg-zinc-100 dark:bg-zinc-700 ${i % 3 === 2 ? 'w-2/3' : 'w-full'}`} />
                             ))}
                         </div>
                     </div>
@@ -85,11 +86,11 @@ export default function Post() {
 
     if (notFound) {
         return (
-            <div className="py-12">
+            <div className="bg-zinc-50/70 py-10 dark:bg-zinc-950 sm:py-14">
                 <Container>
-                    <div className="max-w-2xl mx-auto text-center">
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Post not found</h1>
-                        <p className="text-gray-500 dark:text-gray-400 mt-2">The post you are looking for does not exist.</p>
+                    <div className="mx-auto max-w-2xl rounded-lg border border-zinc-200 bg-white px-6 py-16 text-center dark:border-zinc-800 dark:bg-zinc-900">
+                        <h1 className="text-2xl font-semibold text-zinc-950 dark:text-white">Post not found</h1>
+                        <p className="mt-2 text-zinc-500 dark:text-zinc-400">The post you are looking for does not exist.</p>
                     </div>
                 </Container>
             </div>
@@ -98,14 +99,14 @@ export default function Post() {
 
     if (error) {
         return (
-            <div className="py-12">
+            <div className="bg-zinc-50/70 py-10 dark:bg-zinc-950 sm:py-14">
                 <Container>
-                    <div className="max-w-2xl mx-auto text-center">
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Could not load post</h1>
-                        <p className="text-gray-500 dark:text-gray-400 mt-2">{error}</p>
+                    <div className="mx-auto max-w-2xl rounded-lg border border-red-200 bg-red-50 px-6 py-16 text-center dark:border-red-900/60 dark:bg-red-950/20">
+                        <h1 className="text-2xl font-semibold text-zinc-950 dark:text-white">Could not load post</h1>
+                        <p className="mt-2 text-zinc-600 dark:text-zinc-300">{error}</p>
                         <button
                             onClick={loadPost}
-                            className="mt-6 px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors"
+                            className="mt-6 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-red-950"
                         >
                             Retry
                         </button>
@@ -118,22 +119,24 @@ export default function Post() {
     if (!post) return null;
 
     return (
-        <div className="py-8">
+        <div className="bg-zinc-50/70 py-10 dark:bg-zinc-950 sm:py-14">
             <Container>
                 <article className="max-w-3xl mx-auto">
                     {/* Featured image */}
-                    <div className="relative rounded-2xl overflow-hidden mb-8 border border-gray-100 dark:border-gray-800">
-                        <img
-                            src={service.getFilePreview(post.featuredImage)}
-                            alt={post.title}
-                            className="w-full object-cover"
-                        />
+                    <div className="relative mb-8 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                        {post.featuredImage && (
+                            <img
+                                src={service.getFilePreview(post.featuredImage)}
+                                alt={post.title}
+                                className="aspect-[16/9] w-full object-cover"
+                            />
+                        )}
                         {/* Author controls */}
                         {isAuthor && (
                             <div className="absolute top-4 right-4 flex gap-2">
                                 <Link to={`/edit-post/${post.$id}`}>
-                                    <Button variant="success" className="shadow-lg">
-                                        ✏️ Edit
+                                    <Button variant="secondary" className="shadow-lg">
+                                        Edit
                                     </Button>
                                 </Link>
                                 <Button
@@ -143,20 +146,36 @@ export default function Post() {
                                     disabled={deleting}
                                     className="shadow-lg"
                                 >
-                                    🗑️ Delete
+                                    Delete
                                 </Button>
                             </div>
                         )}
                     </div>
 
-                    {/* Title */}
-                    <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-                        {post.title}
-                    </h1>
+                    <header className="mb-8">
+                        <div className="mb-6 flex items-center gap-3">
+                            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-50 text-sm font-semibold text-blue-700 ring-1 ring-blue-100 dark:bg-blue-950/40 dark:text-blue-300 dark:ring-blue-900/60">
+                                {getInitials(isAuthor ? 'You' : 'Community writer')}
+                            </div>
+                            <div>
+                                <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                                    {isAuthor ? 'You' : 'Community writer'}
+                                </p>
+                                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                                    {formatPostDate(post.$createdAt)} · {estimateReadingTime(post.content)}
+                                </p>
+                            </div>
+                        </div>
+                        <h1 className="text-4xl font-semibold tracking-tight text-zinc-950 dark:text-white sm:text-5xl sm:leading-tight">
+                            {post.title}
+                        </h1>
+                    </header>
 
                     {/* Content */}
-                    <div className="prose prose-gray dark:prose-invert max-w-none">
-                        {parse(post.content)}
+                    <div className="rounded-lg border border-zinc-200 bg-white px-5 py-7 shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-black/20 sm:px-8 sm:py-9">
+                        <div className="prose max-w-none">
+                            {parse(post.content)}
+                        </div>
                     </div>
                 </article>
             </Container>

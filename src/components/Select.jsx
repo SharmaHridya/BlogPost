@@ -1,7 +1,7 @@
 import React, { useId } from 'react';
 
 const Select = React.forwardRef(function Select(
-    { options, label, className = '', ...props },
+    { options, label, className = '', error, ...props },
     ref
 ) {
     const id = useId();
@@ -11,7 +11,7 @@ const Select = React.forwardRef(function Select(
             {label && (
                 <label
                     htmlFor={id}
-                    className="block mb-1.5 text-sm font-medium text-gray-700 dark:text-gray-300"
+                    className="mb-2 block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                 >
                     {label}
                 </label>
@@ -20,12 +20,13 @@ const Select = React.forwardRef(function Select(
                 id={id}
                 ref={ref}
                 className={`
-                    w-full px-4 py-2.5 rounded-xl text-sm
-                    bg-white dark:bg-gray-800
-                    text-gray-900 dark:text-gray-100
-                    border border-gray-200 dark:border-gray-700
-                    focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
-                    transition duration-200 cursor-pointer
+                    w-full cursor-pointer rounded-lg border px-3.5 py-2.5 text-sm shadow-sm
+                    bg-white dark:bg-zinc-900
+                    text-zinc-950 dark:text-zinc-100
+                    border-zinc-200 dark:border-zinc-700
+                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                    transition duration-200
+                    ${error ? 'border-red-300 focus:border-red-500 focus:ring-red-500 dark:border-red-700' : ''}
                     ${className}
                 `}
                 {...props}
@@ -36,6 +37,7 @@ const Select = React.forwardRef(function Select(
                     </option>
                 ))}
             </select>
+            {error && <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">{error}</p>}
         </div>
     );
 });

@@ -1,12 +1,15 @@
-import { useCallback, useEffect, useState, React } from 'react';
-import { useForm } from 'react-hook-form';
+import { useCallback, useEffect, useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import service from '../../auth/config';
 import { Button, Select, RTE, InputField } from '../index';
 
 
+
+
 export default function PostForm({ post }) {
+    
     const navigate = useNavigate();
     const userData = useSelector((state) => state.auth.userData);
     const [submitting, setSubmitting] = useState(false);
@@ -15,7 +18,6 @@ export default function PostForm({ post }) {
     const {
         register,
         handleSubmit,
-        watch,
         setValue,
         control,
         getValues,
@@ -26,6 +28,7 @@ export default function PostForm({ post }) {
             slug: post?.slug || '',
             content: post?.content || '',
             status: post?.status || 'active',
+            userId: userData.$id
         },
     });
 
@@ -47,7 +50,7 @@ export default function PostForm({ post }) {
 
     // Auto-generate slug from title using watch with effect
     // Replace your current useEffect with this:
-    const title = watch('title');
+    const title = useWatch({ control, name: 'title' });
 
     useEffect(() => {
         if (title) {
@@ -102,35 +105,31 @@ export default function PostForm({ post }) {
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {submitError && (
-                <div className="px-4 py-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-400">
+                <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-900/60 dark:bg-red-950/25 dark:text-red-300">
                     {submitError}
                 </div>
             )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 {/* Left column — content */}
-                <div className="lg:col-span-2 space-y-4">
+                <div className="space-y-5 rounded-lg border border-zinc-200 bg-white p-5 shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-black/20 sm:p-6 lg:col-span-2">
                     <div>
                         <InputField
                             label="Title"
                             placeholder="Your post title"
+                            error={errors.title?.message}
                             {...register('title', { required: 'Title is required' })}
                         />
-                        {errors.title && (
-                            <p className="mt-1 text-xs text-red-500">{errors.title.message}</p>
-                        )}
                     </div>
                     <div>
                         <InputField
                             label="Slug"
                             readOnly
+                            error={errors.slug?.message}
                             {...register("slug", {
                                 required: "Slug is required",
                             })}
                         />
-                        {errors.slug && (
-                            <p className="mt-1 text-xs text-red-500">{errors.slug.message}</p>
-                        )}
                     </div>
                     <RTE
                         label="Content"
@@ -141,26 +140,24 @@ export default function PostForm({ post }) {
                 </div>
 
                 {/* Right column — sidebar */}
-                <div className="space-y-4">
+                <aside className="space-y-5 rounded-lg border border-zinc-200 bg-white p-5 shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-black/20 sm:p-6">
                     <div>
                         <InputField
                             label="Featured image"
                             type="file"
                             accept="image/png, image/jpg, image/jpeg, image/gif, image/webp"
+                            error={errors.image ? 'Featured image is required' : undefined}
                             {...register('image', { required: !post })}
                         />
-                        {errors.image && (
-                            <p className="mt-1 text-xs text-red-500">Featured image is required</p>
-                        )}
                     </div>
 
                     {/* Current image preview (edit mode) */}
                     {post && (
-                        <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+                        <div className="overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800">
                             <img
                                 src={service.getFilePreview(post.featuredImage)}
                                 alt={post.title}
-                                className="w-full object-cover"
+                                className="aspect-[16/10] w-full object-cover"
                             />
                         </div>
                     )}
@@ -168,6 +165,7 @@ export default function PostForm({ post }) {
                     <Select
                         label="Status"
                         options={['active', 'inactive']}
+                        error={errors.status ? 'Choose a status' : undefined}
                         {...register('status', { required: true })}
                     />
 
@@ -180,7 +178,10 @@ export default function PostForm({ post }) {
                     >
                         {submitting ? 'Saving…' : post ? 'Update post' : 'Publish post'}
                     </Button>
-                </div>
+                    <p className="text-xs leading-5 text-zinc-500 dark:text-zinc-400">
+                        Active posts appear publicly. Inactive posts stay available in your dashboard as drafts.
+                    </p>
+                </aside>
             </div>
         </form>
     );

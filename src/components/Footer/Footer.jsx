@@ -29,13 +29,13 @@ const footerLinks = [
 
 function Footer() {
     return (
-        <footer className="bg-gray-50 dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800">
+        <footer className="border-t border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950">
             <Container>
-                <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 gap-8 py-12 md:grid-cols-2 lg:grid-cols-4">
                     {/* Brand column */}
                     <div className="lg:col-span-1">
                         <Logo />
-                        <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                        <p className="mt-4 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
                             A modern blogging platform for writers who care about craft and clarity.
                         </p>
                     </div>
@@ -43,7 +43,7 @@ function Footer() {
                     {/* Link columns */}
                     {footerLinks.map((col) => (
                         <div key={col.heading}>
-                            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-4">
+                            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
                                 {col.heading}
                             </h3>
                             <ul className="space-y-3">
@@ -51,7 +51,7 @@ function Footer() {
                                     <li key={link.label}>
                                         <Link
                                             to={link.to}
-                                            className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200"
+                                            className="text-sm text-zinc-600 transition-colors duration-200 hover:text-blue-700 focus:outline-none focus:underline dark:text-zinc-400 dark:hover:text-blue-300"
                                         >
                                             {link.label}
                                         </Link>
@@ -62,14 +62,28 @@ function Footer() {
                     ))}
                 </div>
 
-                <div className="py-6 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <p className="text-xs text-gray-400 dark:text-gray-500">
-                        © {new Date().getFullYear()} Inkwell. All rights reserved.
-                    </p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500">
-                        Built with React & Appwrite
-                    </p>
-                </div>
+                <div className="flex flex-col items-center justify-between gap-4 border-t border-zinc-200 py-6 dark:border-zinc-800 sm:flex-row">
+    <p className="text-xs text-zinc-500 dark:text-zinc-500">
+        © {new Date().getFullYear()} Inkwell. All rights reserved.
+    </p>
+
+    <p className="text-xs text-zinc-500 dark:text-zinc-500">
+        Built with React, Appwrite & lots of coffee ☕
+    </p>
+
+    <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-500">
+        <span>Made with ❤️ by Sharma Hridya.</span>
+
+        <a
+            href="https://github.com/SharmaHridya"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+        >
+            GitHub
+        </a>
+    </div>
+</div>
             </Container>
         </footer>
     );

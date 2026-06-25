@@ -28,14 +28,14 @@ export class Service {
         }
     }
 
-    async createPost({ title, slug, content, featuredImage, status, $id }) {
+    async createPost({ title, slug, content, featuredImage, status, $id, userId }) {
         try {
             this.ensureConfig();
             return await this.databases.createDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionId,
                 slug,
-                { title, content, featuredImage, status, $id }
+                { title, content, featuredImage, status, $id, userId }
             );
         } catch (error) {
             logDevError("Service::createPost", error);

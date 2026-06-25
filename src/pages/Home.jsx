@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Container, PostCard } from '../components';
+import { Link, useNavigate } from 'react-router-dom';
+import { Container, EmptyState, PostCard, SectionHeader, StatCard } from '../components';
 import service from '../auth/config';
 import { toUserMessage } from '../utils/appwriteError';
 
@@ -8,6 +8,7 @@ function Home() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const loadPosts = useCallback(() => {
         setLoading(true);
@@ -30,27 +31,47 @@ function Home() {
     }, [loadPosts]);
 
     return (
-        <div className="py-10">
+        <div className="bg-zinc-50/70 py-10 dark:bg-zinc-950 sm:py-14">
             <Container>
                 {/* Hero */}
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
-                        Ideas worth sharing
-                    </h1>
-                    <p className="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
-                        Discover thoughtful articles written by our community of writers.
-                    </p>
-                </div>
+                <section className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-black/20 sm:p-8 lg:p-10">
+                    <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+                        <SectionHeader
+                            eyebrow="Publishing workspace"
+                            title="Ideas worth sharing, shaped for careful reading."
+                            description="Discover thoughtful articles from the community, track what is live, and keep your next draft close at hand."
+                        />
+                        <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
+                            <Link
+                                to="/add-post"
+                                className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-600/20 transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-900"
+                            >
+                                Write a post
+                            </Link>
+                            <Link
+                                to="/all-posts"
+                                className="inline-flex items-center justify-center rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-zinc-800 shadow-sm transition hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800 dark:focus:ring-offset-zinc-900"
+                            >
+                                View dashboard
+                            </Link>
+                        </div>
+                    </div>
+                    <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                        <StatCard label="Published posts" value={posts.length} helper="Live community articles" tone="blue" />
+                        <StatCard label="Editorial pace" value={loading ? '...' : 'Fresh'} helper="Updated from Appwrite" tone="emerald" />
+                        <StatCard label="Reading mode" value="Clean" helper="Focused article layouts" tone="amber" />
+                    </div>
+                </section>
 
                 {/* Loading skeleton */}
                 {loading && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {Array.from({ length: 8 }).map((_, i) => (
-                            <div key={i} className="rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 animate-pulse">
-                                <div className="aspect-video bg-gray-200 dark:bg-gray-700" />
-                                <div className="p-4 space-y-2">
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-                                    <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded w-1/2" />
+                            <div key={i} className="animate-pulse overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+                                <div className="aspect-[16/10] bg-zinc-200 dark:bg-zinc-800" />
+                                <div className="space-y-3 p-5">
+                                    <div className="h-4 w-3/4 rounded bg-zinc-200 dark:bg-zinc-700" />
+                                    <div className="h-3 w-1/2 rounded bg-zinc-100 dark:bg-zinc-800" />
                                 </div>
                             </div>
                         ))}
@@ -59,52 +80,55 @@ function Home() {
 
                 {/* Empty state */}
                 {!loading && !error && posts.length === 0 && (
-                    <div className="text-center py-20">
-                        <div className="w-20 h-20 rounded-3xl bg-indigo-50 dark:bg-indigo-950/40 flex items-center justify-center mx-auto mb-6">
-                            <svg className="w-10 h-10 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                            </svg>
-                        </div>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                            No posts yet
-                        </h2>
-                        <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-sm mx-auto">
-                            Be the first to write something. Sign up and start sharing your ideas.
-                        </p>
-                        <div className="flex items-center justify-center gap-3">
-                            <Link
-                                to="/add-post"
-                                className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors"
-                            >
-                                Get started
-                            </Link>
-
-                        </div>
+                    <div className="mt-10">
+                        <EmptyState
+                            title="No posts yet"
+                            description="Be the first to publish a thoughtful article for the community."
+                            actionLabel="Write the first post"
+                            actionTo="/add-post"
+                            icon="write"
+                        />
                     </div>
                 )}
 
                 {!loading && error && (
-                    <div className="text-center py-20">
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                    <div className="mt-10 rounded-lg border border-red-200 bg-red-50 px-6 py-12 text-center dark:border-red-900/60 dark:bg-red-950/20">
+                        <h2 className="text-2xl font-semibold text-zinc-950 dark:text-white">
                             Could not load posts
                         </h2>
-                        <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">{error}</p>
-                        <button
-                            onClick={loadPosts}
-                            className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors"
-                        >
-                            Retry
-                        </button>
+                        <p className="mx-auto mt-2 mb-6 max-w-md text-zinc-600 dark:text-zinc-300">{error}</p>
+                        <div className="mt-6 flex flex-col items-center gap-4">
+            <button
+        onClick={loadPosts}
+        className="rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-red-950"
+    >
+        Retry
+    </button>
+
+    <button
+        onClick={() => navigate('/signup')}
+        className="rounded-lg border border-zinc-300 bg-white px-5 py-3 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:focus:ring-offset-red-950"
+    >
+        Not logged in? Sign in to view your posts
+    </button>
+</div>
                     </div>
                 )}
 
                 {/* Post grid */}
                 {!loading && !error && posts.length > 0 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {posts.map((post) => (
-                            <PostCard key={post.$id} {...post} />
-                        ))}
-                    </div>
+                    <section className="mt-10">
+                        <SectionHeader
+                            title="Latest community posts"
+                            description="A curated feed of active posts from everyone writing in Inkwell."
+                            className="mb-6"
+                        />
+                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            {posts.map((post) => (
+                                <PostCard key={post.$id} {...post} />
+                            ))}
+                        </div>
+                    </section>
                 )}
             </Container>
         </div>

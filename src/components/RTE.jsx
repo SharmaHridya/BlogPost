@@ -3,7 +3,7 @@ import { Controller } from 'react-hook-form'
 export default function RTE({ name, control, label, defaultValue = "" }) {
     return (
         <div className='w-full'>
-            {label && <label className='inline-block mb-1 pl-1' > {label}</label >
+            {label && <label className='mb-2 block text-sm font-medium text-zinc-800 dark:text-zinc-200' > {label}</label >
             }
             <Controller
                 name={name}
@@ -25,7 +25,7 @@ export default function RTE({ name, control, label, defaultValue = "" }) {
                                 'bold italic forecolor | alignleft aligncenter ' +
                                 'alignright alignjustify | bullist numlist outdent indent | ' +
                                 'removeformat | help',
-                            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                            content_style: 'body { font-family: Inter, system-ui, -apple-system, sans-serif; font-size:16px; line-height:1.7; color:#18181b; }'
                         }}
                         onEditorChange={onChange}
                     />

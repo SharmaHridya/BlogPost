@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Container, PostForm } from '../components';
+import { Container, PostForm, SectionHeader } from '../components';
 import service from '../auth/config';
 import { toUserMessage } from '../utils/appwriteError';
+import { useSelector } from 'react-redux';
 
 function EditPost() {
     const [post, setPost] = useState(null);
@@ -11,6 +12,13 @@ function EditPost() {
     const [notFound, setNotFound] = useState(false);
     const navigate = useNavigate();
     const { slug } = useParams();
+    const userData = useSelector((state) => state.auth.userData);
+
+    useEffect(() => {
+        if (post && userData && post.userId !== userData.$id) {
+            navigate("/");
+        }
+    }, [post, userData, navigate]);
 
     const loadPost = useCallback(() => {
         if (!slug) {
@@ -45,11 +53,11 @@ function EditPost() {
 
     if (loading) {
         return (
-            <div className="py-8">
+            <div className="bg-zinc-50/70 py-10 dark:bg-zinc-950 sm:py-14">
                 <Container>
                     <div className="animate-pulse space-y-4">
-                        <div className="h-8 bg-gray-200 dark:bg-gray-800 rounded w-1/3" />
-                        <div className="h-48 bg-gray-200 dark:bg-gray-800 rounded-2xl" />
+                        <div className="h-8 w-1/3 rounded bg-zinc-200 dark:bg-zinc-800" />
+                        <div className="h-48 rounded-lg bg-zinc-200 dark:bg-zinc-800" />
                     </div>
                 </Container>
             </div>
@@ -58,11 +66,11 @@ function EditPost() {
 
     if (notFound) {
         return (
-            <div className="py-8">
+            <div className="bg-zinc-50/70 py-10 dark:bg-zinc-950 sm:py-14">
                 <Container>
-                    <div className="text-center py-16">
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Post not found</h1>
-                        <p className="text-gray-500 dark:text-gray-400 mt-2">This post no longer exists.</p>
+                    <div className="rounded-lg border border-zinc-200 bg-white px-6 py-16 text-center dark:border-zinc-800 dark:bg-zinc-900">
+                        <h1 className="text-2xl font-semibold text-zinc-950 dark:text-white">Post not found</h1>
+                        <p className="mt-2 text-zinc-500 dark:text-zinc-400">This post no longer exists.</p>
                     </div>
                 </Container>
             </div>
@@ -71,14 +79,14 @@ function EditPost() {
 
     if (error) {
         return (
-            <div className="py-8">
+            <div className="bg-zinc-50/70 py-10 dark:bg-zinc-950 sm:py-14">
                 <Container>
-                    <div className="text-center py-16">
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Could not open editor</h1>
-                        <p className="text-gray-500 dark:text-gray-400 mt-2">{error}</p>
+                    <div className="rounded-lg border border-red-200 bg-red-50 px-6 py-16 text-center dark:border-red-900/60 dark:bg-red-950/20">
+                        <h1 className="text-2xl font-semibold text-zinc-950 dark:text-white">Could not open editor</h1>
+                        <p className="mt-2 text-zinc-600 dark:text-zinc-300">{error}</p>
                         <button
                             onClick={loadPost}
-                            className="mt-6 px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors"
+                            className="mt-6 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-red-950"
                         >
                             Retry
                         </button>
@@ -89,14 +97,14 @@ function EditPost() {
     }
 
     return post ? (
-        <div className="py-8">
+        <div className="bg-zinc-50/70 py-10 dark:bg-zinc-950 sm:py-14">
             <Container>
-                <div className="mb-6">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Edit post</h1>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        Make changes and republish your article.
-                    </p>
-                </div>
+                <SectionHeader
+                    eyebrow="Writer studio"
+                    title="Edit post"
+                    description="Refine your article, update the image, or change publication status."
+                    className="mb-8"
+                />
                 <PostForm post={post} />
             </Container>
         </div>
