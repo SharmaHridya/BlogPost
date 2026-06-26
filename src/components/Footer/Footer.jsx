@@ -6,7 +6,7 @@ const footerLinks = [
     {
         heading: 'Product',
         links: [
-            { label: 'Features', to: '/' },
+            { label: 'Features', to: '/features' },
             { label: 'All Posts', to: '/all-posts' },
             { label: 'Write', to: '/add-post' },
         ],
@@ -21,8 +21,8 @@ const footerLinks = [
     {
         heading: 'Legal',
         links: [
-            { label: 'Privacy Policy', to: '/' },
-            { label: 'Terms of Service', to: '/' },
+            { label: 'Privacy Policy', to: '/privacy-policy' },
+            { label: 'Terms of Service', to: '/terms' },
         ],
     },
 ];

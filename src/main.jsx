@@ -18,6 +18,9 @@ const EditPost = lazy(() => import('./pages/EditPost.jsx'));
 const Post = lazy(() => import('./pages/Post.jsx'));
 const AllPosts = lazy(() => import('./pages/AllPosts.jsx'));
 const NotFound = lazy(() => import('./pages/NotFound.jsx'));
+const Features = lazy(() => import('./pages/Features.jsx'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy.jsx'));
+const TermsOfService = lazy(() => import('./pages/TermsOfService.jsx'));
 
 // Minimal spinner used during lazy-load suspense
 const PageSpinner = () => (
@@ -50,6 +53,30 @@ const router = createBrowserRouter([
                     </AuthLayout>
                 ),
             },
+            {
+    path: 'features',
+    element: (
+        <Suspense fallback={<PageSpinner />}>
+            <Features />
+        </Suspense>
+    ),
+},
+{
+    path: 'privacy-policy',
+    element: (
+        <Suspense fallback={<PageSpinner />}>
+            <PrivacyPolicy />
+        </Suspense>
+    ),
+},
+{
+    path: 'terms',
+    element: (
+        <Suspense fallback={<PageSpinner />}>
+            <TermsOfService />
+        </Suspense>
+    ),
+},
             {
                 path: 'signup',
                 element: (
