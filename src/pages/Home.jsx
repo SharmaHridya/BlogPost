@@ -2,12 +2,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Container, EmptyState, PostCard, SectionHeader, StatCard } from '../components';
 import service from '../auth/config';
-import { toUserMessage } from '../utils/appwriteError';
+import {isUnauthorizedError,toUserMessage } from '../utils/appwriteError';
+import toast, { Toaster } from 'react-hot-toast';
 
 function Home() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    
     const navigate = useNavigate();
 
     const loadPosts = useCallback(() => {
@@ -17,22 +19,24 @@ function Home() {
             .then((result) => {
                 setPosts(result.documents);
             })
-            .catch((err) => {
-                setError(toUserMessage(err, 'Unable to load posts right now. Please try again.'));
-                setPosts([]);
-            })
+                .catch((err) => {
+                    let msg = isUnauthorizedError(err)? 'Please sign in to continue' : toUserMessage(err, 'Unable to load posts right now. Please try again.');
+                    setError(msg);
+                    setPosts([]);
+                    toast.error(msg);
+                })
             .finally(() => setLoading(false));
     }, []);
 
     useEffect(() => {
-        queueMicrotask(() => {
-            loadPosts();
-        });
-    }, [loadPosts]);
+    loadPosts();
+}, [loadPosts]);
 
     return (
         <div className="bg-zinc-50/70 py-10 dark:bg-zinc-950 sm:py-14">
+            <Toaster position="top-center" />
             <Container>
+            
                 {/* Hero */}
                 <section className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-black/20 sm:p-8 lg:p-10">
                     <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
@@ -92,29 +96,19 @@ function Home() {
                 )}
 
                 {!loading && error && (
-                    <div className="mt-10 rounded-lg border border-red-200 bg-red-50 px-6 py-12 text-center dark:border-red-900/60 dark:bg-red-950/20">
-                        <h2 className="text-2xl font-semibold text-zinc-950 dark:text-white">
-                            Could not load posts
-                        </h2>
-                        <p className="mx-auto mt-2 mb-6 max-w-md text-zinc-600 dark:text-zinc-300">{error}</p>
-                        <div className="mt-6 flex flex-col items-center gap-4">
-            <button
-        onClick={loadPosts}
-        className="rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-red-950"
-    >
-        Retry
-    </button>
+    <div className="mt-10 text-center">
+        <p className="text-sm text-red-500 dark:text-red-400">
+            Failed to load posts. Check your connection or sign in.
+        </p>
 
-    <button
-        onClick={() => navigate('/signup')}
-        className="rounded-lg border border-zinc-300 bg-white px-5 py-3 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:focus:ring-offset-red-950"
-    >
-        Not logged in? Sign in to view your posts
-    </button>
-</div>
-                    </div>
-                )}
-
+        <button
+            onClick={() => navigate('/login')}
+            className="mt-4 text-sm font-semibold text-blue-600 hover:underline dark:text-blue-400"
+        >
+            Go to Sign in
+        </button>
+    </div>
+)}
                 {/* Post grid */}
                 {!loading && !error && posts.length > 0 && (
                     <section className="mt-10">
