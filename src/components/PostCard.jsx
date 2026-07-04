@@ -40,7 +40,7 @@ const PostCard = React.memo(function PostCard({ $id, title, featuredImage, statu
             className="group flex h-full flex-col overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-sm shadow-zinc-200/60 transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-zinc-200/80 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-black/20 dark:hover:border-blue-900/70 dark:hover:shadow-black/30 dark:focus:ring-offset-zinc-950"
         >
             {/* Image */}
-            <div className="aspect-[16/10] w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+            <div className="aspect-16/10 w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
                 {featuredImage ? (
                     <img
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"

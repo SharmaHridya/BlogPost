@@ -72,7 +72,7 @@ function Home() {
                     <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {Array.from({ length: 8 }).map((_, i) => (
                             <div key={i} className="animate-pulse overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-                                <div className="aspect-[16/10] bg-zinc-200 dark:bg-zinc-800" />
+                                <div className="aspect-16/10 bg-zinc-200 dark:bg-zinc-800" />
                                 <div className="space-y-3 p-5">
                                     <div className="h-4 w-3/4 rounded bg-zinc-200 dark:bg-zinc-700" />
                                     <div className="h-3 w-1/2 rounded bg-zinc-100 dark:bg-zinc-800" />

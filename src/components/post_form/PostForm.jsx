@@ -9,7 +9,7 @@ import { Button, Select, RTE, InputField } from '../index';
 
 
 export default function PostForm({ post }) {
-    
+
     const navigate = useNavigate();
     const userData = useSelector((state) => state.auth.userData);
     const [submitting, setSubmitting] = useState(false);
@@ -53,6 +53,8 @@ export default function PostForm({ post }) {
     const title = useWatch({ control, name: 'title' });
 
     useEffect(() => {
+        console.log('useEffect triggered with title:', slugTransform(title))
+
         if (title) {
             setValue('slug', slugTransform(title), { shouldValidate: true });
         }
@@ -103,6 +105,7 @@ export default function PostForm({ post }) {
     };
 
     return (
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {submitError && (
                 <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-900/60 dark:bg-red-950/25 dark:text-red-300">
@@ -157,7 +160,7 @@ export default function PostForm({ post }) {
                             <img
                                 src={service.getFilePreview(post.featuredImage)}
                                 alt={post.title}
-                                className="aspect-[16/10] w-full object-cover"
+                                className="aspect-16/10 w-full object-cover"
                             />
                         </div>
                     )}
